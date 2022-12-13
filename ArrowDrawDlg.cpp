@@ -128,6 +128,7 @@ void CArrowDrawDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	CDialogEx::OnLButtonUp(nFlags, point);
 }
 
+#define PI		3.1415926535
 
 void CArrowDrawDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
@@ -136,9 +137,27 @@ void CArrowDrawDlg::OnMouseMove(UINT nFlags, CPoint point)
 		m_image_dc.FillSolidRect(m_rect, RGB(0, 0, 0)); // 잔상 초기화
 
 		m_image_dc.SelectObject(&m_green_pen);
+
+		// m_image_dc.SelectStockObject(NULL_BRUSH);
+		// m_image_dc.Ellipse(point.x - 50, point.y - 50, point.x + 50, point.y + 50);
+		
 		m_image_dc.MoveTo(m_start_pos);
 		m_image_dc.LineTo(point);
+
+		POINT pos_list[3];
+		pos_list[0].x = point.x; 
+		pos_list[0].y = point.y;
 		
+		double radian = atan2(m_start_pos.y - point.y, point.x - m_start_pos.x);
+		pos_list[1].x = (int)(cos(radian + 5.0 / 6.0 * PI) * 50) + point.x;
+		pos_list[1].y = (int)(sin(radian + 5.0 / 6.0 * PI) * -50) + point.y;
+
+		pos_list[2].x = (int)(cos(radian + 7.0 / 6.0 * PI) * 50) + point.x;
+		pos_list[2].y = (int)(sin(radian + 7.0 / 6.0 * PI) * -50) + point.y;
+
+		m_image_dc.SelectObject(&m_green_brush);
+		m_image_dc.Polygon(pos_list, 3);
+
 		Invalidate(FALSE);
 	}
 
